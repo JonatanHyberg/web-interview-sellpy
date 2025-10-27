@@ -5,7 +5,7 @@ import AddIcon from '@mui/icons-material/Add'
 import Checkbox from '@mui/material/Checkbox'
 import { green } from '@mui/material/colors'
 
-
+//JH
 const replaceTodoAtIndex = (todos,index, newTodo) => {
   const newList = [
     ...todos.slice(0,index),
@@ -17,13 +17,15 @@ const replaceTodoAtIndex = (todos,index, newTodo) => {
 
 export const TodoListForm = ({ todoList, saveTodoList }) => {
   const [todos, setTodos] = useState(todoList.todos)
-  const saveTimeout = useRef(null);
+  //JH
+  const saveTimeout = useRef(null); 
 
   const handleSubmit = (event) => {
     event.preventDefault()
     saveTodoList(todoList.id, { todos })
   }
 
+  //JH
   useEffect(() => {
     if(saveTimeout.current) {
       clearTimeout(saveTimeout.current);
@@ -49,8 +51,7 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
               <Typography sx={{ margin: '8px' }} variant='h6'>
                 {index + 1}
               </Typography>
-
-              <Checkbox
+              <Checkbox //JH
                 type='checkbox'
                 name='checkingBox'
                 checked={todo.completed}
@@ -63,13 +64,12 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
                   setTodos(replaceTodoAtIndex(todos, index, {...todo, completed:event.target.checked}))
                 }}
               />
-            
               <TextField
                 sx={{ flexGrow: 1, marginTop: '1rem' }}
                 label='What to do?'
                 value={todo.text}
                 onChange={(event) => {
-                  setTodos(replaceTodoAtIndex(todos, index, {...todo, text:event.target.value}))
+                  setTodos(replaceTodoAtIndex(todos, index, {...todo, text:event.target.value}))//JH
                 }}
               />
               <Button

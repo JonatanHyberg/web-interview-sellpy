@@ -13,7 +13,7 @@ import { TodoListForm } from './TodoListForm'
 
 
 
-
+//JH
 const fetchTodoLists = async () => {
   try {
     const res = await fetch("/api/todos")
@@ -35,7 +35,7 @@ const fetchTodoLists = async () => {
 
 }
 
-
+//JH
 const sendTodoList = async (id, {todos}) => {
     const update = {'id': id, 'todos': todos}
 
@@ -66,9 +66,10 @@ export const TodoLists = ({ style }) => {
   const [activeList, setActiveList] = useState()
 
   useEffect(() => {
+    //JH
     fetchTodoLists().then(setTodoLists)
   }, [])
-
+  //JH
   const saveTodoList = useCallback(async (id, { todos }) => {
     const successful_save = await sendTodoList(id, { todos })
 
@@ -105,7 +106,7 @@ export const TodoLists = ({ style }) => {
         <TodoListForm
           key={activeList} // use key to make React recreate component to reset internal state
           todoList={todoLists[activeList]}
-          saveTodoList= {saveTodoList}
+          saveTodoList= {saveTodoList} //JH
         />
       )}
     </Fragment>

@@ -8,6 +8,7 @@ app.use(express.json())
 
 const PORT = 3001
 
+//JH
 let todoLists = {
       '0000000001': {
         id: '0000000001',
@@ -23,10 +24,12 @@ let todoLists = {
 
 app.get('/', (req, res) => res.send('Hello World!'))
 
+//JH
 app.get('/api/todos', (req, res) => {
     res.json(todoLists);
 });
 
+//JH
 app.post('/api/todos', (req, res) => {
     const {id, todos} = req.body;
 
