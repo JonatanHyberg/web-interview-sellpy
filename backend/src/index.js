@@ -8,7 +8,7 @@ app.use(express.json())
 
 const PORT = 3001
 
-let todos = {
+let todoLists = {
       '0000000001': {
         id: '0000000001',
         title: 'First List',
@@ -23,16 +23,27 @@ let todos = {
 
 app.get('/', (req, res) => res.send('Hello World!'))
 
-//fetch todo list
 app.get('/api/todos', (req, res) => {
-    res.json(todos);
+    res.json(todoLists);
 });
 
-app.post('/api/message', (req, res) => {
-    console.log(req.body.text)
-    const newTodo = {id: todos.length() + 1, title: "second Todo list", todo: []};
-    todos.push(newTodo)
-    res.status(201).json(newTodo)
+app.post('/api/todos', (req, res) => {
+    const {id, todos} = req.body;
+
+    if (!todoLists[id]) {
+        return res.status(404).json({ error: "List not found" });
+    }
+    
+    try {
+        todoLists[id].todos = todos;
+        res.status(201).json({ 
+            success: true,
+            list: todoLists[id],
+        })
+    } catch (error) {
+        res.status(500).json({error: "Failed to write to database"})
+    }
+
 });
 
 app.listen(PORT, () => console.log(`Example app listening on port ${PORT}!`))

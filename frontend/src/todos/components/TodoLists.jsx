@@ -13,11 +13,12 @@ import { TodoListForm } from './TodoListForm'
 
 
 //Update to fetch from server
-const fetchTodoLists = () => {
+const fetchTodoLists = async () => {
     return fetch("/api/todos")
       .then(res => res.json())
       .catch(err => console.error("Error fetching", err))
 }
+
 
 export const TodoLists = ({ style }) => {
   const [todoLists, setTodoLists] = useState({})
@@ -26,6 +27,33 @@ export const TodoLists = ({ style }) => {
   useEffect(() => {
     fetchTodoLists().then(setTodoLists)
   }, [])
+
+
+  const sendTodoList = async (id, {todos}) => {
+    const update = {'id': id, 'todos': todos}
+
+    try {
+      const res = await fetch("/api/todos", {
+      method: 'POST',
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(update),
+    })
+
+    if (!res.ok) {
+      throw new Error(`Server returned ${res.status}`);
+    }
+
+    const data = await res.json()
+    console.log(data)
+    
+    return true
+
+    } catch (error) {
+      console.error("Failed to save todos: ", error)
+      return false
+    }
+
+}
 
   if (!Object.keys(todoLists).length) return null
   return (
@@ -49,12 +77,20 @@ export const TodoLists = ({ style }) => {
         <TodoListForm
           key={activeList} // use key to make React recreate component to reset internal state
           todoList={todoLists[activeList]}
-          saveTodoList={(id, { todos }) => {
-            const listToUpdate = todoLists[id]
-            setTodoLists({
-              ...todoLists,
-              [id]: { ...listToUpdate, todos },
-            })
+          saveTodoList= {async (id, { todos }) => {
+          const sucessful_save = await sendTodoList(id, {todos})
+
+          if(!sucessful_save) {
+            alert("Failed to save your todos. Please try again!");
+            return;
+          } 
+
+          const listToUpdate = todoLists[id]
+          setTodoLists({
+            ...todoLists,
+            [id]: { ...listToUpdate, todos },
+          })
+
           }}
         />
       )}
