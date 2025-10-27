@@ -14,22 +14,27 @@ import { TodoListForm } from './TodoListForm'
 
 //Update to fetch from server
 const fetchTodoLists = async () => {
-    return fetch("/api/todos")
-      .then(res => res.json())
-      .catch(err => console.error("Error fetching", err))
+  try {
+    const res = await fetch("/api/todos")
+
+    if (!res.ok) {
+      console.error("Server returned", res.status);
+      alert(`Error code: ${res.status}`)
+      return {};
+    }
+
+    const data = await res.json();
+    return data;
+
+  } catch (error) {
+    console.error("Error reaching server", error)
+    alert(`Error reaching server ${error}`)
+    return {}
+  }
+
 }
 
-
-export const TodoLists = ({ style }) => {
-  const [todoLists, setTodoLists] = useState({})
-  const [activeList, setActiveList] = useState()
-
-  useEffect(() => {
-    fetchTodoLists().then(setTodoLists)
-  }, [])
-
-
-  const sendTodoList = async (id, {todos}) => {
+const sendTodoList = async (id, {todos}) => {
     const update = {'id': id, 'todos': todos}
 
     try {
@@ -52,8 +57,16 @@ export const TodoLists = ({ style }) => {
       console.error("Failed to save todos: ", error)
       return false
     }
-
 }
+
+export const TodoLists = ({ style }) => {
+  const [todoLists, setTodoLists] = useState({})
+  const [activeList, setActiveList] = useState()
+
+  useEffect(() => {
+    fetchTodoLists().then(setTodoLists)
+  }, [])
+
 
   if (!Object.keys(todoLists).length) return null
   return (
