@@ -1,3 +1,8 @@
+# Completed tasks:
+    Persistent todo lists
+    Auto save
+    checkmark to indicate completed
+    
 # Sellpy web interview
 
 Welcome to Sellpy's web interview repo!

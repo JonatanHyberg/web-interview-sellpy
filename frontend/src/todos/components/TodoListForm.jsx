@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { TextField, Card, CardContent, CardActions, Button, Typography } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import AddIcon from '@mui/icons-material/Add'
 import Checkbox from '@mui/material/Checkbox'
 import { green } from '@mui/material/colors'
-import { useEffect, useRef } from 'react'
+
 
 const replaceTodoAtIndex = (todos,index, newTodo) => {
   const newList = [
@@ -30,12 +30,11 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
     }
 
     saveTimeout.current = setTimeout(() => {
-      console.log("Autosaving...");
       saveTodoList(todoList.id, { todos });
     }, 1000);
 
     return () => clearTimeout(saveTimeout.current);
-  },[todos])
+  }, [todos, saveTodoList, todoList.id])
 
   return (
     <Card sx={{ margin: '0 1rem' }}>
@@ -62,7 +61,6 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
                 }}
                 onChange={event => {
                   setTodos(replaceTodoAtIndex(todos, index, {...todo, completed:event.target.checked}))
-                  //handleSubmit(event)
                 }}
               />
             
@@ -72,20 +70,18 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
                 value={todo.text}
                 onChange={(event) => {
                   setTodos(replaceTodoAtIndex(todos, index, {...todo, text:event.target.value}))
-                  //handleSubmit(event)
                 }}
               />
               <Button
                 sx={{ margin: '8px' }}
                 size='small'
                 color='secondary'
-                onClick={(event) => {
+                onClick={() => {
                   setTodos([
                     // immutable delete
                     ...todos.slice(0, index),
                     ...todos.slice(index + 1),
                   ])
-                  //handleSubmit(event)
                 }}
               >
                 <DeleteIcon />
@@ -96,9 +92,8 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
             <Button
               type='button'
               color='primary'
-              onClick={(event) => {
+              onClick={() => {
                 setTodos([...todos, {text:'', completed:false}])
-                //handleSubmit(event)
               }}
             >
               Add Todo <AddIcon />

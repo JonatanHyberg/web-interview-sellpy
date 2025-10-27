@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react'
+import React, { Fragment, useState, useEffect, useCallback } from 'react'
 import {
   Card,
   CardContent,
@@ -12,13 +12,14 @@ import ReceiptIcon from '@mui/icons-material/Receipt'
 import { TodoListForm } from './TodoListForm'
 
 
-//Update to fetch from server
+
+
 const fetchTodoLists = async () => {
   try {
     const res = await fetch("/api/todos")
 
     if (!res.ok) {
-      console.error("Server returned", res.status);
+      console.error("Server returned error code: ", res.status);
       alert(`Error code: ${res.status}`)
       return {};
     }
@@ -27,12 +28,13 @@ const fetchTodoLists = async () => {
     return data;
 
   } catch (error) {
-    console.error("Error reaching server", error)
-    alert(`Error reaching server ${error}`)
+    console.error("Error code: ", error)
+    alert(`Error code: ${error}`)
     return {}
   }
 
 }
+
 
 const sendTodoList = async (id, {todos}) => {
     const update = {'id': id, 'todos': todos}
@@ -67,6 +69,19 @@ export const TodoLists = ({ style }) => {
     fetchTodoLists().then(setTodoLists)
   }, [])
 
+  const saveTodoList = useCallback(async (id, { todos }) => {
+    const successful_save = await sendTodoList(id, { todos })
+
+    if (!successful_save) {
+      alert("Failed to save your todos. Please try again!")
+      return
+    }
+
+    setTodoLists(prevLists => ({
+      ...prevLists,
+      [id]: { ...prevLists[id], todos },
+    }))
+  }, [])
 
   if (!Object.keys(todoLists).length) return null
   return (
@@ -90,21 +105,7 @@ export const TodoLists = ({ style }) => {
         <TodoListForm
           key={activeList} // use key to make React recreate component to reset internal state
           todoList={todoLists[activeList]}
-          saveTodoList= {async (id, { todos }) => {
-          const sucessful_save = await sendTodoList(id, {todos})
-
-          if(!sucessful_save) {
-            alert("Failed to save your todos. Please try again!");
-            return;
-          } 
-
-          const listToUpdate = todoLists[id]
-          setTodoLists({
-            ...todoLists,
-            [id]: { ...listToUpdate, todos },
-          })
-
-          }}
+          saveTodoList= {saveTodoList}
         />
       )}
     </Fragment>
