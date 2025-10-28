@@ -10,6 +10,7 @@ import {
 } from '@mui/material'
 import ReceiptIcon from '@mui/icons-material/Receipt'
 import { TodoListForm } from './TodoListForm'
+import { green, red } from '@mui/material/colors'
 
 
 
@@ -61,6 +62,11 @@ const sendTodoList = async (id, {todos}) => {
     }
 }
 
+const getListStatusColor = (todos) => {
+  const completedList = todos.length > 0 && todos.every(todo => todo.completed);
+  return completedList ? green[500] : red[500];
+}
+
 export const TodoLists = ({ style }) => {
   const [todoLists, setTodoLists] = useState({})
   const [activeList, setActiveList] = useState()
@@ -96,7 +102,10 @@ export const TodoLists = ({ style }) => {
                 <ListItemIcon>
                   <ReceiptIcon />
                 </ListItemIcon>
-                <ListItemText primary={todoLists[key].title} />
+                <ListItemText 
+                  primary={todoLists[key].title}
+                  sx = {{color: getListStatusColor(todoLists[key].todos)}}
+                />
               </ListItemButton>
             ))}
           </List>

@@ -3,8 +3,10 @@ import { TextField, Card, CardContent, CardActions, Button, Typography } from '@
 import DeleteIcon from '@mui/icons-material/Delete'
 import AddIcon from '@mui/icons-material/Add'
 import Checkbox from '@mui/material/Checkbox'
-import { green } from '@mui/material/colors'
-
+import { green, red } from '@mui/material/colors'
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 //JH
 const replaceTodoAtIndex = (todos,index, newTodo) => {
   const newList = [
@@ -15,10 +17,15 @@ const replaceTodoAtIndex = (todos,index, newTodo) => {
   return newList
 }
 
+const isOverdue = (todo) => {
+    return !todo.completed && todo.dueDate && new Date(todo.dueDate) < new Date()
+}
+
 export const TodoListForm = ({ todoList, saveTodoList }) => {
   const [todos, setTodos] = useState(todoList.todos)
   //JH
   const saveTimeout = useRef(null); 
+  const autoSaveTimeLimit = 1000;
 
   const handleSubmit = (event) => {
     event.preventDefault()
@@ -33,7 +40,7 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
 
     saveTimeout.current = setTimeout(() => {
       saveTodoList(todoList.id, { todos });
-    }, 1000);
+    }, autoSaveTimeLimit);
 
     return () => clearTimeout(saveTimeout.current);
   }, [todos, saveTodoList, todoList.id])
@@ -47,7 +54,12 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
           style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}
         >
           {todos.map((todo, index) => (
-            <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
+            <div key={index} style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: "0.5rem", 
+              marginBottom: "1rem", 
+              }}>
               <Typography sx={{ margin: '8px' }} variant='h6'>
                 {index + 1}
               </Typography>
@@ -65,13 +77,34 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
                 }}
               />
               <TextField
-                sx={{ flexGrow: 1, marginTop: '1rem' }}
+                sx={{ flexGrow: 1,}}
                 label='What to do?'
                 value={todo.text}
                 onChange={(event) => {
                   setTodos(replaceTodoAtIndex(todos, index, {...todo, text:event.target.value}))//JH
                 }}
               />
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <DatePicker
+                    label = "Due Date"
+                    value = {todo.dueDate ? new Date(todo.dueDate) : null}
+                    onChange = {newDate =>
+                      setTodos(replaceTodoAtIndex(todos, index, {...todo, dueDate:newDate}))
+                    }
+                    renderInput={(params) => (<TextField {...params} 
+                      sx={{
+                        "& .MuiInputBase-input": {
+                          color: isOverdue(todo) ? red[500] : 'inherit', // text color
+                        },
+                        "& .MuiInputLabel-root": {
+                          color: isOverdue(todo) ? red[500] : 'inherit', // label color
+                        },
+                      }}
+                    />)
+                    }
+                  />
+              </LocalizationProvider>
+              
               <Button
                 sx={{ margin: '8px' }}
                 size='small'
@@ -93,7 +126,7 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
               type='button'
               color='primary'
               onClick={() => {
-                setTodos([...todos, {text:'', completed:false}])
+                setTodos([...todos, {text:'', completed:false, dueDate: null}])
               }}
             >
               Add Todo <AddIcon />
