@@ -27,13 +27,13 @@ const normalizeTodoList = (todoList) => {
 }
 
 let todoLists = {
-      '0000000001': {
-        id: '0000000001',
+      '1': {
+        id: '1',
         title: 'First List',
         todos: [{text: 'First todo of first list!', completed: true, dueDate: null}],
       },
-      '0000000002': {
-        id: '0000000002',
+      '2': {
+        id: '2',
         title: 'Second List',
         todos: [{text:'First todo of second list!', completed: false, dueDate: null}],
       },
@@ -42,31 +42,30 @@ let todoLists = {
 app.get('/', (request, result) => result.send('Hello World!'))
 
 
-app.get('/api/todos', (request, result) => {
+app.get('/api/lists', (request, result) => {
     result.json(todoLists);
 });
 
+//updated whole todo list based on listID
+app.put('/api/lists/:listId/todos', (request, result) => {
+    const { listId } = request.params;
+    const todos = request.body;
 
-app.post('/api/todos', (request, result) => {
-    const {id, todos} = request.body;
-
-    console.log(todos)
-
-    if (!todoLists[id]) {
+    if (!todoLists[listId]) {
         return result.status(404).json({ error: "List not found" });
     }
-    
     try {
         const normalizedTodoList = normalizeTodoList(todos);
-        todoLists[id].todos = normalizedTodoList;
-        result.status(201).json({ 
-            success: true,
-            list: todoLists[id],
-        })
-    } catch (error) {
-        result.status(500).json({error: "Failed to write to database"})
-    }
+        todoLists[listId].todos = normalizedTodoList;
 
-});
+        result.status(200).json({
+        success: true,
+        list: todoLists[listId],
+        });
+    } catch (error) {
+        result.status(500).json({ error: "Failed to write to database" });
+    }
+})
+
 
 app.listen(PORT, () => console.log(`Example app listening on port ${PORT}!`))

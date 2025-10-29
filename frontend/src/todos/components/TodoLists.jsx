@@ -11,59 +11,14 @@ import {
 import ReceiptIcon from '@mui/icons-material/Receipt'
 import { TodoListForm } from './TodoListForm'
 import { todoColors } from '../../theme/colors'
+import { fetchTodoLists, updateTodosList } from './todosApi'
 
-
-const fetchTodoLists = async () => {
-  try {
-    const res = await fetch("/api/todos")
-
-    if (!res.ok) {
-      console.error("Server returned error code: ", res.status);
-      alert(`Error code: ${res.status}`)
-      return {};
-    }
-
-    const data = await res.json();
-    return data;
-
-  } catch (error) {
-    console.error("Error code: ", error)
-    alert(`Error code: ${error}`)
-    return {}
-  }
-
-}
-
-
-const sendTodoList = async (id, {todos}) => {
-    const update = {'id': id, 'todos': todos}
-
-    try {
-      const res = await fetch("/api/todos", {
-      method: 'POST',
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify(update),
-    })
-
-    if (!res.ok) {
-      throw new Error(`Server returned ${res.status}`);
-    }
-
-    const data = await res.json()
-    console.log(data)
-    
-    return true
-
-    } catch (error) {
-      console.error("Failed to save todos: ", error)
-      return false
-    }
-}
 
 const getTodoListStatusColor = (todos) => {
   const completedList = todos.length > 0 && todos.every(todo => todo.completed);
   return completedList ? todoColors.completed : todoColors.late;
 }
+
 
 export const TodoLists = ({ style }) => {
   const [todoLists, setTodoLists] = useState({})
@@ -75,8 +30,8 @@ export const TodoLists = ({ style }) => {
 
 
   const saveTodoList = useCallback(async (id, { todos }) => {
-    const successful_save = await sendTodoList(id, { todos })
-
+    const successful_save = await updateTodosList(id, todos);
+    
     if (!successful_save) {
       alert("Failed to save your todos. Please try again!")
       return

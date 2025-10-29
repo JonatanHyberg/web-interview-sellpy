@@ -100,8 +100,7 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
                     />)
                     }
                   />
-              </LocalizationProvider>
-              
+              </LocalizationProvider>     
               <Button
                 sx={{ margin: '8px' }}
                 size='small'
