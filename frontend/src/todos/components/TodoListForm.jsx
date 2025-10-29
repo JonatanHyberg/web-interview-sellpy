@@ -23,9 +23,8 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
     saveTodoList(todoList.id, { todos })
   }
 
-  //automatic save function
+  //Automatic save function that debounces saving if new updates to the todo list
   useEffect(() => {
-    //skippes save if no changes
     if (lastSavedTodos.current === todos) {
       return
     }
