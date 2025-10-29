@@ -2,6 +2,8 @@
     Persistent todo lists
     Auto save
     checkmark to indicate completed
+    Indicate that todo list is complete
+    Due date for todo items
     
 # Sellpy web interview
 

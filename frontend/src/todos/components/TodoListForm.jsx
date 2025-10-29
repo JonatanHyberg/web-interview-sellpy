@@ -3,12 +3,15 @@ import { TextField, Card, CardContent, CardActions, Button, Typography } from '@
 import DeleteIcon from '@mui/icons-material/Delete'
 import AddIcon from '@mui/icons-material/Add'
 import Checkbox from '@mui/material/Checkbox'
-import { green, red } from '@mui/material/colors'
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-//JH
-const replaceTodoAtIndex = (todos,index, newTodo) => {
+import { todoColors } from '../../theme/colors'
+
+
+const AUTO_SAVE_DELAY_ms = 1000;
+
+const replaceTodoAtIndex = (todos, index, newTodo) => {
   const newList = [
     ...todos.slice(0,index),
     newTodo,
@@ -17,22 +20,28 @@ const replaceTodoAtIndex = (todos,index, newTodo) => {
   return newList
 }
 
-const isOverdue = (todo) => {
+const isTodoOverdue = (todo) => {
     return !todo.completed && todo.dueDate && new Date(todo.dueDate) < new Date()
 }
 
+const createEmptyTodo = (overrides = {}) => ({
+  text: '',
+  completed: false,
+  dueDate: null,
+  ...overrides,
+});
+
 export const TodoListForm = ({ todoList, saveTodoList }) => {
   const [todos, setTodos] = useState(todoList.todos)
-  //JH
   const saveTimeout = useRef(null); 
-  const autoSaveTimeLimit = 1000;
+
 
   const handleSubmit = (event) => {
     event.preventDefault()
     saveTodoList(todoList.id, { todos })
   }
 
-  //JH
+  //automatic save function
   useEffect(() => {
     if(saveTimeout.current) {
       clearTimeout(saveTimeout.current);
@@ -40,7 +49,7 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
 
     saveTimeout.current = setTimeout(() => {
       saveTodoList(todoList.id, { todos });
-    }, autoSaveTimeLimit);
+    }, AUTO_SAVE_DELAY_ms);
 
     return () => clearTimeout(saveTimeout.current);
   }, [todos, saveTodoList, todoList.id])
@@ -63,13 +72,13 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
               <Typography sx={{ margin: '8px' }} variant='h6'>
                 {index + 1}
               </Typography>
-              <Checkbox //JH
+              <Checkbox 
                 type='checkbox'
                 name='checkingBox'
                 checked={todo.completed}
                 sx={{
                   '&.Mui-checked': {
-                    color: green[500],
+                    color: todoColors.completed,
                   },
                 }}
                 onChange={event => {
@@ -81,7 +90,7 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
                 label='What to do?'
                 value={todo.text}
                 onChange={(event) => {
-                  setTodos(replaceTodoAtIndex(todos, index, {...todo, text:event.target.value}))//JH
+                  setTodos(replaceTodoAtIndex(todos, index, {...todo, text:event.target.value}))
                 }}
               />
               <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -94,10 +103,10 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
                     renderInput={(params) => (<TextField {...params} 
                       sx={{
                         "& .MuiInputBase-input": {
-                          color: isOverdue(todo) ? red[500] : 'inherit', // text color
+                          color: isTodoOverdue(todo) ? todoColors.late : todoColors.normal, // text color
                         },
                         "& .MuiInputLabel-root": {
-                          color: isOverdue(todo) ? red[500] : 'inherit', // label color
+                          color: isTodoOverdue(todo) ? todoColors.late : todoColors.normal, // label color
                         },
                       }}
                     />)
@@ -126,7 +135,7 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
               type='button'
               color='primary'
               onClick={() => {
-                setTodos([...todos, {text:'', completed:false, dueDate: null}])
+                setTodos([...todos, createEmptyTodo()])
               }}
             >
               Add Todo <AddIcon />

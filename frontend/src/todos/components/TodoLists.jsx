@@ -10,11 +10,9 @@ import {
 } from '@mui/material'
 import ReceiptIcon from '@mui/icons-material/Receipt'
 import { TodoListForm } from './TodoListForm'
-import { green, red } from '@mui/material/colors'
+import { todoColors } from '../../theme/colors'
 
 
-
-//JH
 const fetchTodoLists = async () => {
   try {
     const res = await fetch("/api/todos")
@@ -36,7 +34,7 @@ const fetchTodoLists = async () => {
 
 }
 
-//JH
+
 const sendTodoList = async (id, {todos}) => {
     const update = {'id': id, 'todos': todos}
 
@@ -62,9 +60,9 @@ const sendTodoList = async (id, {todos}) => {
     }
 }
 
-const getListStatusColor = (todos) => {
+const getTodoListStatusColor = (todos) => {
   const completedList = todos.length > 0 && todos.every(todo => todo.completed);
-  return completedList ? green[500] : red[500];
+  return completedList ? todoColors.completed : todoColors.late;
 }
 
 export const TodoLists = ({ style }) => {
@@ -72,10 +70,10 @@ export const TodoLists = ({ style }) => {
   const [activeList, setActiveList] = useState()
 
   useEffect(() => {
-    //JH
     fetchTodoLists().then(setTodoLists)
   }, [])
-  //JH
+
+
   const saveTodoList = useCallback(async (id, { todos }) => {
     const successful_save = await sendTodoList(id, { todos })
 
@@ -104,7 +102,7 @@ export const TodoLists = ({ style }) => {
                 </ListItemIcon>
                 <ListItemText 
                   primary={todoLists[key].title}
-                  sx = {{color: getListStatusColor(todoLists[key].todos)}}
+                  sx = {{color: getTodoListStatusColor(todoLists[key].todos)}}
                 />
               </ListItemButton>
             ))}
@@ -115,7 +113,7 @@ export const TodoLists = ({ style }) => {
         <TodoListForm
           key={activeList} // use key to make React recreate component to reset internal state
           todoList={todoLists[activeList]}
-          saveTodoList= {saveTodoList} //JH
+          saveTodoList= {saveTodoList} 
         />
       )}
     </Fragment>

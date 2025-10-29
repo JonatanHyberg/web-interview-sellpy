@@ -8,7 +8,22 @@ app.use(express.json())
 
 const PORT = 3001
 
-//JH
+const createTodo = (todo) => {
+    const newTodo = {
+        text: todo.text ?? '',
+        completed: todo.completed ?? false,
+        dueDate: todo.dueDate ?? null,
+    }
+    return newTodo
+}
+const normalizeTodoList = (todoList) => {
+    if (!Array.isArray(todoList)) {
+        throw new Error("Posted todoList not in an array");
+    }
+    return todoList.map((todo) => createTodo(todo))
+}
+
+
 let todoLists = {
       '0000000001': {
         id: '0000000001',
@@ -22,29 +37,32 @@ let todoLists = {
       },
     };
 
-app.get('/', (req, res) => res.send('Hello World!'))
+app.get('/', (request, result) => result.send('Hello World!'))
 
-//JH
-app.get('/api/todos', (req, res) => {
-    res.json(todoLists);
+
+app.get('/api/todos', (request, result) => {
+    result.json(todoLists);
 });
 
-//JH
-app.post('/api/todos', (req, res) => {
-    const {id, todos} = req.body;
+
+app.post('/api/todos', (request, result) => {
+    const {id, todos} = request.body;
+
+    console.log(todos)
 
     if (!todoLists[id]) {
-        return res.status(404).json({ error: "List not found" });
+        return result.status(404).json({ error: "List not found" });
     }
     
     try {
-        todoLists[id].todos = todos;
-        res.status(201).json({ 
+        const normalizedTodoList = normalizeTodoList(todos);
+        todoLists[id].todos = normalizedTodoList;
+        result.status(201).json({ 
             success: true,
             list: todoLists[id],
         })
     } catch (error) {
-        res.status(500).json({error: "Failed to write to database"})
+        result.status(500).json({error: "Failed to write to database"})
     }
 
 });
