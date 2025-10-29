@@ -1,4 +1,4 @@
-const BASE_URL = "/api/lists";
+import { BASE_URL } from "../../config/constants";
 
 export const fetchTodoLists = async () => {
   try {
@@ -18,7 +18,6 @@ export const fetchTodoLists = async () => {
     alert(`Error code: ${error}`)
     return {}
   }
-
 }
 
 export const updateTodosList = async (listId, todos) => {

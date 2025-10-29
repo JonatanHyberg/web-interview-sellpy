@@ -3,8 +3,7 @@ import { Card, CardContent, CardActions, Button, Typography } from '@mui/materia
 import AddIcon from '@mui/icons-material/Add'
 import { createTodo } from '../utils/todoUtil'
 import TodoItem from './TodoItem'
-
-const AUTO_SAVE_DELAY_ms = 1000;
+import { AUTO_SAVE_DELAY_ms } from '../../config/constants'
 
 export const TodoListForm = ({ todoList, saveTodoList }) => {
   const [todos, setTodos] = useState(todoList.todos)
