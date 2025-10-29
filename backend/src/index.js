@@ -8,17 +8,20 @@ app.use(express.json())
 
 const PORT = 3001
 
-const createTodo = (todo) => {
-    const newTodo = {
-        text: todo.text ?? '',
-        completed: todo.completed ?? false,
-        dueDate: todo.dueDate ?? null,
-    }
-    return newTodo
-}
+const defaultTodoFields = {
+  text: '',
+  completed: false,
+  dueDate: null,
+};
+
+const createTodo = (input = {}) => ({
+  ...defaultTodoFields,
+  ...input,
+});
+
 const normalizeTodoList = (todoList) => {
     if (!Array.isArray(todoList)) {
-        throw new Error("Posted todoList not in an array");
+        throw new Error("Recived todoList not in an array");
     }
     return todoList.map((todo) => createTodo(todo))
 }

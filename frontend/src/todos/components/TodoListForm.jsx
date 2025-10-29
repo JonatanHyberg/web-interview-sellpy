@@ -8,7 +8,6 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { todoColors } from '../../theme/colors'
 
-
 const AUTO_SAVE_DELAY_ms = 1000;
 
 const replaceTodoAtIndex = (todos, index, newTodo) => {
@@ -20,15 +19,20 @@ const replaceTodoAtIndex = (todos, index, newTodo) => {
   return newList
 }
 
-const isTodoOverdue = (todo) => {
-    return !todo.completed && todo.dueDate && new Date(todo.dueDate) < new Date()
+const getTodoOverdueColor = (todo) => {
+  const isOverDue = !todo.completed && todo.dueDate && new Date(todo.dueDate) < new Date()
+  return isOverDue ? todoColors.late : todoColors.normal
 }
 
-const createEmptyTodo = (overrides = {}) => ({
+const defaultTodoFields = {
   text: '',
   completed: false,
   dueDate: null,
-  ...overrides,
+};
+
+const createTodo = (input = {}) => ({
+  ...defaultTodoFields,
+  ...input,
 });
 
 export const TodoListForm = ({ todoList, saveTodoList }) => {
@@ -103,10 +107,10 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
                     renderInput={(params) => (<TextField {...params} 
                       sx={{
                         "& .MuiInputBase-input": {
-                          color: isTodoOverdue(todo) ? todoColors.late : todoColors.normal, // text color
+                          color: getTodoOverdueColor(todo) // text color
                         },
                         "& .MuiInputLabel-root": {
-                          color: isTodoOverdue(todo) ? todoColors.late : todoColors.normal, // label color
+                          color: getTodoOverdueColor(todo) // label color
                         },
                       }}
                     />)
@@ -135,7 +139,7 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
               type='button'
               color='primary'
               onClick={() => {
-                setTodos([...todos, createEmptyTodo()])
+                setTodos([...todos, createTodo()])
               }}
             >
               Add Todo <AddIcon />
