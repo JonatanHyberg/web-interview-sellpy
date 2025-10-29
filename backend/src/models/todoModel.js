@@ -4,10 +4,17 @@ export const defaultTodoFields = {
   dueDate: null,
 };
 
-export const createTodo = (input = {}) => ({
-  ...defaultTodoFields,
-  ...input,
-});
+export const createTodo = (input = {}) => {
+  const allowedFields = Object.keys(defaultTodoFields);
+  const filteredInput = Object.fromEntries(
+    Object.entries(input).filter(([key]) => allowedFields.includes(key))
+  );
+
+  return {
+    ...defaultTodoFields,
+    ...filteredInput,
+  };
+};
 
 export const normalizeTodoList = (todoList) => {
   if (!Array.isArray(todoList)) {
