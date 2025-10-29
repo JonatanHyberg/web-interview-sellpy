@@ -26,7 +26,6 @@ const normalizeTodoList = (todoList) => {
     return todoList.map((todo) => createTodo(todo))
 }
 
-
 let todoLists = {
       '0000000001': {
         id: '0000000001',

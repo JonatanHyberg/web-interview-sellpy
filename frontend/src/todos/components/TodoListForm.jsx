@@ -7,33 +7,10 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { todoColors } from '../../theme/colors'
+import { createTodo } from './todo'
+import { getTodoOverdueColor, replaceTodoAtIndex } from './todoUtils'
 
 const AUTO_SAVE_DELAY_ms = 1000;
-
-const replaceTodoAtIndex = (todos, index, newTodo) => {
-  const newList = [
-    ...todos.slice(0,index),
-    newTodo,
-    ...todos.slice(index+1)
-  ]
-  return newList
-}
-
-const getTodoOverdueColor = (todo) => {
-  const isOverDue = !todo.completed && todo.dueDate && new Date(todo.dueDate) < new Date()
-  return isOverDue ? todoColors.late : todoColors.normal
-}
-
-const defaultTodoFields = {
-  text: '',
-  completed: false,
-  dueDate: null,
-};
-
-const createTodo = (input = {}) => ({
-  ...defaultTodoFields,
-  ...input,
-});
 
 export const TodoListForm = ({ todoList, saveTodoList }) => {
   const [todos, setTodos] = useState(todoList.todos)
