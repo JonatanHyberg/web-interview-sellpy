@@ -7,8 +7,8 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { todoColors } from '../../theme/colors'
-import { createTodo } from './todo'
-import { getTodoOverdueColor, replaceTodoAtIndex } from './todoUtils'
+import { createTodo, getTodoOverdueColor, replaceTodoAtIndex  } from './todo'
+
 
 const AUTO_SAVE_DELAY_ms = 1000;
 
@@ -18,7 +18,6 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
   const lastSavedTodos = useRef(todos);
   const saveTimeout = useRef(null); 
 
-
   const handleSubmit = (event) => {
     event.preventDefault()
     saveTodoList(todoList.id, { todos })
@@ -26,6 +25,7 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
 
   //automatic save function
   useEffect(() => {
+    //skippes save if no changes
     if (lastSavedTodos.current === todos) {
       return
     }
