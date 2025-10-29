@@ -14,6 +14,8 @@ const AUTO_SAVE_DELAY_ms = 1000;
 
 export const TodoListForm = ({ todoList, saveTodoList }) => {
   const [todos, setTodos] = useState(todoList.todos)
+
+  const lastSavedTodos = useRef(todos);
   const saveTimeout = useRef(null); 
 
 
@@ -24,6 +26,11 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
 
   //automatic save function
   useEffect(() => {
+    if (lastSavedTodos.current === todos) {
+      return
+    }
+    lastSavedTodos.current = todos;
+
     if(saveTimeout.current) {
       clearTimeout(saveTimeout.current);
     }
