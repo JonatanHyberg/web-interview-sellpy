@@ -10,15 +10,8 @@ import {
 } from '@mui/material'
 import ReceiptIcon from '@mui/icons-material/Receipt'
 import { TodoListForm } from './TodoListForm'
-import { todoColors } from '../../theme/colors'
-import { fetchTodoLists, updateTodosList } from './todosApi'
-
-
-const getTodoListStatusColor = (todos) => {
-  const completedList = todos.length > 0 && todos.every(todo => todo.completed);
-  return completedList ? todoColors.completed : todoColors.late;
-}
-
+import { getTodoListStatusColor } from '../utils/todoUtil'
+import { fetchTodoLists, updateTodosList } from '../api/todosApi'
 
 export const TodoLists = ({ style }) => {
   const [todoLists, setTodoLists] = useState({})
@@ -27,7 +20,6 @@ export const TodoLists = ({ style }) => {
   useEffect(() => {
     fetchTodoLists().then(setTodoLists)
   }, [])
-
 
   const saveTodoList = useCallback(async (id, { todos }) => {
     const successful_save = await updateTodosList(id, todos);

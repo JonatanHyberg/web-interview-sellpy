@@ -24,3 +24,8 @@ export const getTodoOverdueColor = (todo) => {
   const isOverDue = !todo.completed && todo.dueDate && new Date(todo.dueDate) < new Date()
   return isOverDue ? todoColors.late : todoColors.normal
 }
+
+export const getTodoListStatusColor = (todos) => {
+  const completedList = todos.length > 0 && todos.every(todo => todo.completed);
+  return completedList ? todoColors.completed : todoColors.late;
+}

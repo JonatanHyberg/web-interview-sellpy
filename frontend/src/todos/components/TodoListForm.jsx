@@ -1,14 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { TextField, Card, CardContent, CardActions, Button, Typography } from '@mui/material'
-import DeleteIcon from '@mui/icons-material/Delete'
+import { Card, CardContent, CardActions, Button, Typography } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
-import Checkbox from '@mui/material/Checkbox'
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { todoColors } from '../../theme/colors'
-import { createTodo, getTodoOverdueColor, replaceTodoAtIndex  } from './todo'
-
+import { createTodo } from '../utils/todoUtil'
+import TodoItem from './TodoItem'
 
 const AUTO_SAVE_DELAY_ms = 1000;
 
@@ -23,9 +17,8 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
     saveTodoList(todoList.id, { todos })
   }
 
-  //Automatic save function that debounces saving if new updates to the todo list
   useEffect(() => {
-    if (lastSavedTodos.current === todos) {
+    if (lastSavedTodos.current === todos) { //skips autosave if no changes too todoList
       return
     }
     lastSavedTodos.current = todos;
@@ -50,71 +43,13 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
           style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}
         >
           {todos.map((todo, index) => (
-            <div key={index} style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: "0.5rem", 
-              marginBottom: "1rem", 
-              }}>
-              <Typography sx={{ margin: '8px' }} variant='h6'>
-                {index + 1}
-              </Typography>
-              <Checkbox 
-                type='checkbox'
-                name='checkingBox'
-                checked={todo.completed}
-                sx={{
-                  '&.Mui-checked': {
-                    color: todoColors.completed,
-                  },
-                }}
-                onChange={event => {
-                  setTodos(replaceTodoAtIndex(todos, index, {...todo, completed:event.target.checked}))
-                }}
-              />
-              <TextField
-                sx={{ flexGrow: 1,}}
-                label='What to do?'
-                value={todo.text}
-                onChange={(event) => {
-                  setTodos(replaceTodoAtIndex(todos, index, {...todo, text:event.target.value}))
-                }}
-              />
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <DatePicker
-                    label = "Due Date"
-                    value = {todo.dueDate ? new Date(todo.dueDate) : null}
-                    onChange = {newDate =>
-                      setTodos(replaceTodoAtIndex(todos, index, {...todo, dueDate:newDate}))
-                    }
-                    renderInput={(params) => (<TextField {...params} 
-                      sx={{
-                        "& .MuiInputBase-input": {
-                          color: getTodoOverdueColor(todo) // text color
-                        },
-                        "& .MuiInputLabel-root": {
-                          color: getTodoOverdueColor(todo) // label color
-                        },
-                      }}
-                    />)
-                    }
-                  />
-              </LocalizationProvider>     
-              <Button
-                sx={{ margin: '8px' }}
-                size='small'
-                color='secondary'
-                onClick={() => {
-                  setTodos([
-                    // immutable delete
-                    ...todos.slice(0, index),
-                    ...todos.slice(index + 1),
-                  ])
-                }}
-              >
-                <DeleteIcon />
-              </Button>
-            </div>
+            <TodoItem
+            key={index}
+            todo={todo}
+            index={index}
+            todos={todos}
+            setTodos={setTodos}
+            />
           ))}
           <CardActions>
             <Button
