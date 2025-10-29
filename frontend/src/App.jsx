@@ -2,7 +2,6 @@ import React from 'react'
 import { AppBar, Toolbar, Typography } from '@mui/material'
 import { TodoLists } from './todos/components/TodoLists'
 
-
 const MainAppBar = () => {
   return (
     <AppBar position='static' color='primary'>

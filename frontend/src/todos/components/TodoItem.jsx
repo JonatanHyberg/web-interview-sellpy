@@ -1,19 +1,14 @@
 import React from 'react'
-import { TextField,  Button, Typography } from '@mui/material'
+import { TextField, Button, Typography } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import Checkbox from '@mui/material/Checkbox'
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { todoColors } from '../../theme/colors'
-import { getTodoOverdueColor, replaceTodoAtIndex  } from '../utils/todoUtil'
+import { getTodoOverdueColor, replaceTodoAtIndex } from '../utils/todoUtil'
 
-export default function TodoItem({ 
-  todo, 
-  index, 
-  todos, 
-  setTodos, 
-}) {
+export default function TodoItem({ todo, index, todos, setTodos }) {
   return (
     <div
       style={{
@@ -23,7 +18,7 @@ export default function TodoItem({
         marginBottom: '1rem',
       }}
     >
-      <Typography sx={{ margin: '8px' }} variant="h6">
+      <Typography sx={{ margin: '8px' }} variant='h6'>
         {index + 1}
       </Typography>
 
@@ -37,34 +32,34 @@ export default function TodoItem({
             replaceTodoAtIndex(todos, index, {
               ...todo,
               completed: event.target.checked,
-            })
-          );
+            }),
+          )
         }}
       />
       <TextField
         sx={{ flexGrow: 1 }}
-        label="What to do?"
+        label='What to do?'
         value={todo.text}
         onChange={(event) => {
           setTodos(
             replaceTodoAtIndex(todos, index, {
               ...todo,
               text: event.target.value,
-            })
-          );
+            }),
+          )
         }}
       />
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <DatePicker
-          label="Due Date"
+          label='Due Date'
           value={todo.dueDate ? new Date(todo.dueDate) : null}
           onChange={(newDate) => {
             setTodos(
               replaceTodoAtIndex(todos, index, {
                 ...todo,
                 dueDate: newDate,
-              })
-            );
+              }),
+            )
           }}
           renderInput={(params) => (
             <TextField
@@ -83,17 +78,17 @@ export default function TodoItem({
       </LocalizationProvider>
       <Button
         sx={{ margin: '8px' }}
-        size="small"
-        color="secondary"
+        size='small'
+        color='secondary'
         onClick={() => {
           setTodos([
-            ...todos.slice(0, index),
-            ...todos.slice(index + 1),
-          ]);
+            ...todos.slice(0, index), 
+            ...todos.slice(index + 1)
+          ])
         }}
       >
         <DeleteIcon />
       </Button>
     </div>
-  );
+  )
 }

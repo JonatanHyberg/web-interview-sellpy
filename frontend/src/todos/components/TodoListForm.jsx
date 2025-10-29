@@ -8,8 +8,8 @@ import { AUTO_SAVE_DELAY_ms } from '../../config/constants'
 export const TodoListForm = ({ todoList, saveTodoList }) => {
   const [todos, setTodos] = useState(todoList.todos)
 
-  const lastSavedTodos = useRef(todos);
-  const saveTimeout = useRef(null); 
+  const lastSavedTodos = useRef(todos)
+  const saveTimeout = useRef(null)
 
   const handleSubmit = (event) => {
     event.preventDefault()
@@ -17,20 +17,21 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
   }
 
   useEffect(() => {
-    if (lastSavedTodos.current === todos) { //skips autosave if no changes too todoList
+    if (lastSavedTodos.current === todos) {
+      //skips autosave if no changes too todoList
       return
     }
-    lastSavedTodos.current = todos;
+    lastSavedTodos.current = todos
 
-    if(saveTimeout.current) {
-      clearTimeout(saveTimeout.current);
+    if (saveTimeout.current) {
+      clearTimeout(saveTimeout.current)
     }
 
     saveTimeout.current = setTimeout(() => {
-      saveTodoList(todoList.id, { todos });
-    }, AUTO_SAVE_DELAY_ms);
+      saveTodoList(todoList.id, { todos })
+    }, AUTO_SAVE_DELAY_ms)
 
-    return () => clearTimeout(saveTimeout.current);
+    return () => clearTimeout(saveTimeout.current)
   }, [todos, saveTodoList, todoList.id])
 
   return (
@@ -42,12 +43,12 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
           style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}
         >
           {todos.map((todo, index) => (
-            <TodoItem
-            key={index}
-            todo={todo}
-            index={index}
-            todos={todos}
-            setTodos={setTodos}
+            <TodoItem 
+              key={index} 
+              todo={todo} 
+              index={index} 
+              todos={todos} 
+              setTodos={setTodos} 
             />
           ))}
           <CardActions>

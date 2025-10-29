@@ -22,14 +22,14 @@ export const TodoLists = ({ style }) => {
   }, [])
 
   const saveTodoList = useCallback(async (id, { todos }) => {
-    const successful_save = await updateTodosList(id, todos);
-    
+    const successful_save = await updateTodosList(id, todos)
+
     if (!successful_save) {
-      alert("Failed to save your todos. Please try again!")
+      alert('Failed to save your todos. Please try again!')
       return
     }
 
-    setTodoLists(prevLists => ({
+    setTodoLists((prevLists) => ({
       ...prevLists,
       [id]: { ...prevLists[id], todos },
     }))
@@ -47,9 +47,9 @@ export const TodoLists = ({ style }) => {
                 <ListItemIcon>
                   <ReceiptIcon />
                 </ListItemIcon>
-                <ListItemText 
+                <ListItemText
                   primary={todoLists[key].title}
-                  sx = {{color: getTodoListStatusColor(todoLists[key].todos)}}
+                  sx={{ color: getTodoListStatusColor(todoLists[key].todos) }}
                 />
               </ListItemButton>
             ))}
@@ -60,7 +60,7 @@ export const TodoLists = ({ style }) => {
         <TodoListForm
           key={activeList} // use key to make React recreate component to reset internal state
           todoList={todoLists[activeList]}
-          saveTodoList= {saveTodoList} 
+          saveTodoList={saveTodoList}
         />
       )}
     </Fragment>
